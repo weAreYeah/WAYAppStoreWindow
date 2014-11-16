@@ -23,8 +23,8 @@
 #import "WAYWindow.h"
 #import "INAppStoreWindow.h"
 
-// Set this flag to YES, if you want to force the usage of INAppStoreWindow
-#define SIMULATE_PRE_YOSEMITE NO
+// Set this flag to 1, if you want to force the usage of INAppStoreWindow
+#define SIMULATE_PRE_YOSEMITE 1
 
 static int isYosemiteOrGreater = -1;
 
