@@ -5,11 +5,9 @@ A drop-in replacement for INAppStoreWindow, which switches its class implementat
 
 The motivation behind this class is the following warning while running INAppStoreWindow based applications in OS X 10.10 Yosemite:
 
-	```objc
 	NSWindow warning: adding an unknown subview: <INMovableByBackgroundContainerView: 0x600000120780>
 	2014-11-16 14:26:45.245 WAYAppStoreWindowDemo[12114:305020] Call stack:
 	[...]
-	```
 
 We implemented ```WAYWindow``` which provides the same interface, to a certain extent, as INAppStoreWindow. ```WAYWindow``` lets you specify a cutom window titlebar height and add subviews to the titlebar. You can also define custom margins for the standard window buttons. However ```WAYWindow``` has been built to be OS X Yosemite exclusive.
 
