@@ -1,15 +1,17 @@
 WAYAppStoreWindow
 =========
 
-A drop-in replacement for INAppStoreWindow, which switches its class implementation at runtime between WAYWindow and INAppStoreWindow, depending on the OS X version.
+WAYAppStoreWindow is our approach to let you use INAppStoreWindow like features in OS X Yosemite without the warnings.
 
-The motivation behind this class is the following warning while running INAppStoreWindow based applications in OS X 10.10 Yosemite:
+It's a drop-in replacement for **INAppStoreWindow**, which switches its class implementation at runtime between **WAYWindow** and **INAppStoreWindow**, depending on the OS X version.
+
+The motivation behind this class is the following warning while running applications using *INAppStoreWindow* in OS X 10.10 Yosemite:
 
 	NSWindow warning: adding an unknown subview: <INMovableByBackgroundContainerView: 0x600000120780>
 	2014-11-16 14:26:45.245 WAYAppStoreWindowDemo[12114:305020] Call stack:
 	[...]
 
-We implemented ```WAYWindow``` which provides the same interface, to a certain extent, as INAppStoreWindow. ```WAYWindow``` lets you specify a cutom window titlebar height and add subviews to the titlebar. You can also define custom margins for the standard window buttons. However ```WAYWindow``` has been built to be OS X Yosemite exclusive.
+We introduced ```WAYWindow``` which provides the same interface, to a certain extent, as INAppStoreWindow. ```WAYWindow``` lets you specify a custom window titlebar height and add subviews to the titlebar. You can also define custom margins for the standard window buttons and center them. However ```WAYWindow``` has been built to work on OS X Yosemite only.
 
 This class, ```WAYAppStoreWindow``` switches its internal implementation at runtime. If the app is running on pre-Yosemite OS X versions, ```INAppStoreWindow``` will be used, otherwise ```WAYWindow``` will be used.
 
@@ -27,6 +29,11 @@ Usage
 
 1. Drag a new NSWindow instance to your XIB
 2. Set the class of the instance to WAYAppStoreWindow
+
+**Migrating from INAppStoreWindow:**
+
+1. Change the class of your ```INAppStoreWindow``` instance to ```WAYAppStoreWindow```.
+2. Test a lot.
 
 Interesting
 -----------
