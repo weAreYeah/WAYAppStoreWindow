@@ -24,9 +24,35 @@
 #import "INAppStoreWindow.h"
 
 // Set this flag to 1, if you want to force the usage of INAppStoreWindow
-#define SIMULATE_PRE_YOSEMITE 1
+#define SIMULATE_PRE_YOSEMITE 0
 
-static int isYosemiteOrGreater = -1;
+#pragma mark - WAYDefensiveWindow
+/** Internally, if the class decides to use WAYWindow instead of INAppStoreWindow, we won't use WAYWindow directly, but its subclass WAYDefensiveWindow instead, which logs warnings, if the developer calls a method, which is only implemented by INAppStoreWindow. This may happen if the developer tries to make use of features of INAppStoreWindow, which have not been ported yet to WAYWindow. */
+@interface WAYDefensiveWindow : WAYWindow
+@end
+
+// DUMMY FUNCTION
+void WAYDefensiveWindowDummyIMP(id self, SEL _cmd) {
+	// This function will be used as method implementation for
+	// methods which are available in INAppStoreWindow, but not
+	// in WAYWindow
+	NSLog(@"WARNING: Instances of '%@' do not implement %@; yet. Prevented an exception for sending unrecognized selector.",
+		  [self superclass],
+		  NSStringFromSelector(_cmd));
+}
+
+@implementation WAYDefensiveWindow : WAYWindow
+
++ (BOOL) resolveInstanceMethod:(SEL)aSelector {
+	// If INAppStoreWindow implements this method, and WAYWindow does not, add a new dummy method, which does nothing but logging a warning.
+	if ([INAppStoreWindow instancesRespondToSelector:aSelector] && ![WAYWindow instancesRespondToSelector:aSelector]) {
+		class_addMethod([self class], aSelector, (IMP)WAYDefensiveWindowDummyIMP, "v@:");
+		return YES;
+	}
+	return [super resolveInstanceMethod:aSelector];
+}
+
+@end
 
 /** We need to add private properties of the NSWindow subclasses here. */
 @class WAYWindowDelegateProxy;
@@ -35,6 +61,8 @@ static int isYosemiteOrGreater = -1;
 @property (strong) NSArray* standardButtons;
 @property (strong) NSTitlebarAccessoryViewController *dummyTitlebarAccessoryViewController;
 @end
+
+static int isYosemiteOrGreater = -1;
 
 // Let's suppress Incomplete Implementation warnings
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
@@ -53,13 +81,13 @@ static int isYosemiteOrGreater = -1;
 /** All we do is to swap the class implementation at runtime. */
 + (instancetype)alloc {
 	id instance = [super alloc];
-	object_setClass(instance, ([self isYosemiteOrGreater]) ? [WAYWindow class] : [INAppStoreWindow class]);
+	object_setClass(instance, ([self isYosemiteOrGreater]) ? [WAYDefensiveWindow class] : [INAppStoreWindow class]);
 	return instance;
 }
 
 + (instancetype) allocWithZone:(struct _NSZone *)zone {
 	id instance = [super allocWithZone:zone];
-	object_setClass(instance, ([self isYosemiteOrGreater]) ? [WAYWindow class] : [INAppStoreWindow class]);
+	object_setClass(instance, ([self isYosemiteOrGreater]) ? [WAYDefensiveWindow class] : [INAppStoreWindow class]);
 	return instance;
 }
 
