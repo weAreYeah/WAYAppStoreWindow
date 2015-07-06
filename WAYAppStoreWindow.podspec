@@ -9,5 +9,6 @@ Pod::Spec.new do |spec|
   spec.source_files = 'WAYAppStoreWindow/*.{h,m}'
   spec.framework    = 'AppKit'
   spec.requires_arc = true
-  spec.dependency 'INAppStoreWindow', '~> 1.4'
+  spec.dependency     'INAppStoreWindow', '~> 1.4'
+  spec.platform     = :osx
 end
